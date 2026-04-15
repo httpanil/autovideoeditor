@@ -1,0 +1,167 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Background */
+body {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Card Container */
+.container {
+    background: #fff;
+    padding: 40px;
+    border-radius: 16px;
+    width: 400px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    text-align: center;
+    animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Heading */
+h1 {
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 25px;
+}
+
+/* Labels */
+label {
+    display: block;
+    text-align: left;
+    margin-top: 15px;
+    font-weight: 500;
+    color: #555;
+}
+
+/* Inputs */
+input[type="file"],
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    outline: none;
+    transition: 0.3s;
+    font-size: 14px;
+}
+
+/* Focus effect */
+input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 8px rgba(102,126,234,0.4);
+}
+
+/* Button */
+button {
+    margin-top: 25px;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Hover */
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* Footer */
+.footer {
+    margin-top: 15px;
+    font-size: 12px;
+    color: #999;
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.video-container {
+    margin-top: 20px;
+    text-align: center;
+}
+
+/* 🔥 THIS FIXES OVERFLOW */
+.video-wrapper {
+    width: 100%;
+    max-width: 500px;
+    margin: auto;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.video-wrapper video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.download-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: linear-gradient(45deg, #6a5acd, #836fff);
+    color: white;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.video-control{
+    width: 100%;
+}
+
+.spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid #ffffff;
+
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+
+  margin-left: 8px;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+#submitBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}

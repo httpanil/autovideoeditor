@@ -1,0 +1,7 @@
+ffmpeg/
+*.mp4
+*.mp3
+*.jpg
+*.wav
+__pycache__/
+*.pyc

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Video Maker</title>
+
+    {% load static %}
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>🎬 AI Video Maker</h1>
+        <p class="subtitle">Create stunning videos automatically</p>
+
+        <form id="videoForm" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <label>
+                <input type="radio" name="mode" value="auto" checked> Auto (Download Images)
+            </label>
+
+            <label>
+                <input type="radio" name="mode" value="manual"> Upload Your Images
+            </label>
+
+            <br><br>
+            <label>Select Audio File</label>
+            <input type="file" name="audio" required>
+            <div id="keywordSection">
+                <label>Enter Keywords</label>
+                <input type="text" name="keywords" placeholder="e.g. love, beach, travel...">
+            </div>
+            
+            <div id="fileUpload" style="display:none;">
+                <label>Select Images:</label><br>
+                <input type="file" name="media_files" multiple accept="image/*"><br><br>
+            </div>
+
+            <button type="submit" id="submitBtn">
+                <span id="btnText">Generate Video</span>
+                <span id="btnSpinner" class="spinner" style="display:none;"></span>
+            </button>
+        </form>
+
+        <div id="result"></div>
+
+        <div class="footer">
+            Built with Django + MoviePy
+        </div>
+    </div>
+
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>
