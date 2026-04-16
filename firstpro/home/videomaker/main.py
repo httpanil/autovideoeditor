@@ -8,25 +8,26 @@ from moviepy.video.fx import Loop
 import uuid
 import subprocess
 from home.models import VideoJob
+import shutil
 
 
 # ---------------- FFMPEG SETUP ----------------
 
 def setup_ffmpeg():
+    ffmpeg_path = shutil.which("ffmpeg")
+    ffprobe_path = shutil.which("ffprobe")
 
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-
-    ffmpeg_path = os.path.join(base_dir, "ffmpeg", "ffmpeg.exe")
-    ffprobe_path = os.path.join(base_dir, "ffmpeg", "ffprobe.exe")
-
-    if not os.path.exists(ffmpeg_path):
-        raise RuntimeError("ffmpeg.exe not found inside ffmpeg folder")
+    if not ffmpeg_path:
+        raise RuntimeError("ffmpeg not found on system")
 
     os.environ["IMAGEIO_FFMPEG_EXE"] = ffmpeg_path
     os.environ["FFMPEG_BINARY"] = ffmpeg_path
-    os.environ["FFPROBE_BINARY"] = ffprobe_path
 
-    print("Using bundled FFmpeg:", ffmpeg_path)
+    if ffprobe_path:
+        os.environ["FFPROBE_BINARY"] = ffprobe_path
+
+    print("Using system FFmpeg:", ffmpeg_path)
+
 
 
 setup_ffmpeg()

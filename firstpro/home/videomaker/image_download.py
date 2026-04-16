@@ -17,12 +17,6 @@ KEYWORD_FOLDER = os.path.join(BASE_DIR, "keywords")
 
 FFMPEG_FOLDER = os.path.join(BASE_DIR, "ffmpeg")
 
-# FFMPEG_PATH = os.path.join(FFMPEG_FOLDER, "ffmpeg.exe")
-# FFPROBE_PATH = os.path.join(FFMPEG_FOLDER, "ffprobe.exe")
-FFMPEG_PATH = "ffmpeg"
-FFPROBE_PATH = "ffprobe"
-FFPLAY_PATH = os.path.join(FFMPEG_FOLDER, "ffplay.exe")
-
 IMAGE_DURATION = 3  # seconds per image
 MAX_IMAGES = 70
 
@@ -58,11 +52,15 @@ def update_status(job_id, message, progress=None):
 # Check ffmpeg
 # -----------------------------
 def check_ffmpeg():
+    import shutil
 
-    # if not os.path.exists(FFPROBE_PATH):
-    #     print("ERROR: ffprobe.exe not found in ffmpeg folder")
-    #     exit()
-    print("Using system ffmpeg")
+    if not shutil.which("ffmpeg"):
+        raise RuntimeError("ffmpeg not installed")
+
+    if not shutil.which("ffprobe"):
+        raise RuntimeError("ffprobe not installed")
+
+    print("FFmpeg is available")
 
 
 # -----------------------------
@@ -99,19 +97,33 @@ def clear_images():
 # -----------------------------
 # Get audio duration
 # -----------------------------
+import shutil
+
 def get_audio_duration(audio_path):
 
+    ffprobe = shutil.which("ffprobe")
+
+    if not ffprobe:
+        raise RuntimeError("ffprobe not found on system")
+
     cmd = [
-        FFPROBE_PATH,
+        ffprobe,
         "-v", "error",
         "-show_entries", "format=duration",
         "-of", "default=noprint_wrappers=1:nokey=1",
         audio_path
     ]
 
-    result = subprocess.run(cmd, stdout=subprocess.PIPE)
+    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
 
-    duration = float(result.stdout)
+    if result.returncode != 0:
+        print("FFPROBE ERROR:", result.stderr)
+        raise RuntimeError("Failed to get audio duration")
+
+    try:
+        duration = float(result.stdout.strip())
+    except:
+        raise RuntimeError("Invalid audio duration output")
 
     return math.ceil(duration)
 
