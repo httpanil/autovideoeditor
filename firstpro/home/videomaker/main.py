@@ -2,8 +2,8 @@ import cv2
 import os
 import numpy as np
 import random
-import tkinter as tk
-from tkinter import filedialog, messagebox, simpledialog
+# import tkinter as tk
+# from tkinter import filedialog, messagebox, simpledialog
 from moviepy import VideoFileClip, AudioFileClip, CompositeAudioClip
 from .video_selector import get_video_resolution
 from moviepy.video.fx import Loop
@@ -723,188 +723,188 @@ def add_voice_to_video(temp_video, final_output, audio_file):
 
 
 # ---------------- MAIN PROGRAM ----------------
-if __name__ == "__main__":
-    try:
+# if __name__ == "__main__":
+#     try:
 
-        root = tk.Tk()
-        root.withdraw()
-        root.update()
+#         root = tk.Tk()
+#         root.withdraw()
+#         root.update()
 
 
-        audio_file = filedialog.askopenfilename(
-            title="Select Audio",
-            filetypes=[("Audio Files", "*.mp3 *.wav")]
-        )
+#         audio_file = filedialog.askopenfilename(
+#             title="Select Audio",
+#             filetypes=[("Audio Files", "*.mp3 *.wav")]
+#         )
 
-        if not audio_file:
-            messagebox.showerror("Error", "No audio selected")
-            exit()
+#         if not audio_file:
+#             messagebox.showerror("Error", "No audio selected")
+#             exit()
 
-        choice = messagebox.askyesno(
-            "Image Mode",
-            "Yes = Auto Download Images\nNo = Select Manually",
-            parent=root
-        )
+#         choice = messagebox.askyesno(
+#             "Image Mode",
+#             "Yes = Auto Download Images\nNo = Select Manually",
+#             parent=root
+#         )
 
-        if choice:
-            # AUTO MODE
-            keywords = simpledialog.askstring(
-            "Keywords",
-            "Enter at least 3 keywords separated by comma:",
-            parent=root
-            )
+#         if choice:
+#             # AUTO MODE
+#             keywords = simpledialog.askstring(
+#             "Keywords",
+#             "Enter at least 3 keywords separated by comma:",
+#             parent=root
+#             )
 
-            if not keywords:
-                exit()
+#             if not keywords:
+#                 exit()
 
-            keywords = [k.strip() for k in keywords.split(",") if k.strip()]
-            from .image_download import generate_images_from_audio
+#             keywords = [k.strip() for k in keywords.split(",") if k.strip()]
+#             from .image_download import generate_images_from_audio
 
-            images = generate_images_from_audio(audio_file,keywords)
-            print("[DEBUG] Images received in main:", len(images))
+#             images = generate_images_from_audio(audio_file,keywords)
+#             print("[DEBUG] Images received in main:", len(images))
 
-        else:
-            # MANUAL MODE
-            images = filedialog.askopenfilenames(
-                title="Select Images",
-                filetypes=[("Image Files", "*.png *.jpg *.jpeg *.webp")]
+#         else:
+#             # MANUAL MODE
+#             images = filedialog.askopenfilenames(
+#                 title="Select Images",
+#                 filetypes=[("Image Files", "*.png *.jpg *.jpeg *.webp")]
                 
-            )
-            images = list(images)
+#             )
+#             images = list(images)
 
-        if not images:
-            messagebox.showerror("Error", "No images selected")
-            exit()
+#         if not images:
+#             messagebox.showerror("Error", "No images selected")
+#             exit()
 
-        images = validate_images(images)
+#         images = validate_images(images)
 
-        voice_clip = load_audio_safe(audio_file)
+#         voice_clip = load_audio_safe(audio_file)
 
-        voice_duration = voice_clip.duration
+#         voice_duration = voice_clip.duration
 
-        total_frames_needed = int(voice_duration * fps)
+#         total_frames_needed = int(voice_duration * fps)
 
-        os.makedirs(export_folder, exist_ok=True)
+#         os.makedirs(export_folder, exist_ok=True)
 
-        existing = [
-            f for f in os.listdir(export_folder)
-            if f.startswith("video") and f.endswith(".mp4")
-        ]
+#         existing = [
+#             f for f in os.listdir(export_folder)
+#             if f.startswith("video") and f.endswith(".mp4")
+#         ]
 
-        numbers = [
-            int(f.replace("video", "").replace(".mp4", ""))
-            for f in existing
-            if f.replace("video", "").replace(".mp4", "").isdigit()
-        ]
+#         numbers = [
+#             int(f.replace("video", "").replace(".mp4", ""))
+#             for f in existing
+#             if f.replace("video", "").replace(".mp4", "").isdigit()
+#         ]
 
-        next_number = max(numbers) + 1 if numbers else 1
+#         next_number = max(numbers) + 1 if numbers else 1
 
-        final_output = os.path.join(export_folder, f"video{next_number}.mp4")
-        temp_video = os.path.join(export_folder, f"temp_{uuid.uuid4().hex}.mp4")
+#         final_output = os.path.join(export_folder, f"video{next_number}.mp4")
+#         temp_video = os.path.join(export_folder, f"temp_{uuid.uuid4().hex}.mp4")
         
 
-        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+#         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 
-        video = cv2.VideoWriter(temp_video, fourcc, fps, (width, height))
+#         video = cv2.VideoWriter(temp_video, fourcc, fps, (width, height))
 
-        if not video.isOpened():
-            raise RuntimeError("VideoWriter failed")
+#         if not video.isOpened():
+#             raise RuntimeError("VideoWriter failed")
 
-        frame_count = 0
-        img_index = 0
-        prev_img = None
-        sfx_times = []
+#         frame_count = 0
+#         img_index = 0
+#         prev_img = None
+#         sfx_times = []
 
-        safety_counter = 0
-        max_attempts = len(images) * 5
-
-
-        while True:
-
-            safety_counter += 1
-
-            if safety_counter > max_attempts:
-                raise RuntimeError("Too many invalid images")
-
-            img_path = images[img_index % len(images)]
-
-            img = load_and_resize(img_path)
-            if img is None:
-                img_index += 1
-                continue
-            sfx_times.append(frame_count / fps)
-
-            if img is None:
-                img_index += 1
-                continue
-
-            if prev_img is not None:
-
-                transition = random.choice([
-                    fade_transition,
-                    slide_transition,
-                    blur_transition,
-                    whip_pan_transition,
-                    zoom_blur_transition,
-                    circle_reveal_transition,
-                    flash_transition,
-                    glitch_transition
-                ])
-
-                for f in transition(prev_img, img):
-
-                    if safe_write(video, f):
-                        frame_count += 1
-
-                    progress = frame_count / total_frames_needed * 100
-                    print(f"\rRendering: {progress:.1f}%", end="")
-
-                    if frame_count >= total_frames_needed:
-                        break
-
-            animation = random.choice([
-                cinematic_zoom,
-                zoom_out,
-                pan_left_to_right,
-                pan_right_to_left,
-                cinematic_pan,
-                diagonal_drift,
-                tilt_motion
-            ])
-
-            for f in animation(img):
-
-                if safe_write(video, f):
-                    frame_count += 1
-
-                progress = frame_count / total_frames_needed * 100
-                print(f"\rRendering: {progress:.1f}%", end="")
-
-                if frame_count >= total_frames_needed:
-                    break
-
-            prev_img = img
-            img_index += 1
-
-            if frame_count >= total_frames_needed:
-                break
-
-        video.release()
-
-        print("\nRendering audio...")
-
-        add_voice_to_video(temp_video, final_output, audio_file)
-
-        print("Process completed successfully.")
+#         safety_counter = 0
+#         max_attempts = len(images) * 5
 
 
-    except KeyboardInterrupt:
+#         while True:
 
-        print("\nProcess interrupted by user")
+#             safety_counter += 1
 
-    except Exception as e:
+#             if safety_counter > max_attempts:
+#                 raise RuntimeError("Too many invalid images")
 
-        print("\nUnexpected error:", e)
+#             img_path = images[img_index % len(images)]
+
+#             img = load_and_resize(img_path)
+#             if img is None:
+#                 img_index += 1
+#                 continue
+#             sfx_times.append(frame_count / fps)
+
+#             if img is None:
+#                 img_index += 1
+#                 continue
+
+#             if prev_img is not None:
+
+#                 transition = random.choice([
+#                     fade_transition,
+#                     slide_transition,
+#                     blur_transition,
+#                     whip_pan_transition,
+#                     zoom_blur_transition,
+#                     circle_reveal_transition,
+#                     flash_transition,
+#                     glitch_transition
+#                 ])
+
+#                 for f in transition(prev_img, img):
+
+#                     if safe_write(video, f):
+#                         frame_count += 1
+
+#                     progress = frame_count / total_frames_needed * 100
+#                     print(f"\rRendering: {progress:.1f}%", end="")
+
+#                     if frame_count >= total_frames_needed:
+#                         break
+
+#             animation = random.choice([
+#                 cinematic_zoom,
+#                 zoom_out,
+#                 pan_left_to_right,
+#                 pan_right_to_left,
+#                 cinematic_pan,
+#                 diagonal_drift,
+#                 tilt_motion
+#             ])
+
+#             for f in animation(img):
+
+#                 if safe_write(video, f):
+#                     frame_count += 1
+
+#                 progress = frame_count / total_frames_needed * 100
+#                 print(f"\rRendering: {progress:.1f}%", end="")
+
+#                 if frame_count >= total_frames_needed:
+#                     break
+
+#             prev_img = img
+#             img_index += 1
+
+#             if frame_count >= total_frames_needed:
+#                 break
+
+#         video.release()
+
+#         print("\nRendering audio...")
+
+#         add_voice_to_video(temp_video, final_output, audio_file)
+
+#         print("Process completed successfully.")
+
+
+#     except KeyboardInterrupt:
+
+#         print("\nProcess interrupted by user")
+
+#     except Exception as e:
+
+#         print("\nUnexpected error:", e)
 
 
 def create_video(audio_file, keywords=None, media_files=None,job_id=None):
