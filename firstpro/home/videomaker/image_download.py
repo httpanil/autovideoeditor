@@ -4,7 +4,6 @@ import math
 import shutil
 from icrawler.builtin import BingImageCrawler
 import os
-# from tkinter import Tk, filedialog, messagebox
 import signal
 import sys
 from home.models import VideoJob
@@ -39,24 +38,6 @@ def check_folders():
     os.makedirs(VOICE_FOLDER, exist_ok=True)
 
 
-# -----------------------------
-# Pick Voice over
-# -----------------------------
-# def select_voice_file():
-#     root = Tk()
-#     root.withdraw()
-
-#     file_path = filedialog.askopenfilename(
-#         initialdir=VOICE_FOLDER,
-#         title="Select Voice Over",
-#         filetypes=[("Audio Files", "*.mp3 *.wav")]
-#     )
-
-#     if not file_path:
-#         print("No voice file selected. Exiting.")
-#         exit()
-
-#     return file_path
 
 from home.models import VideoJob
 
