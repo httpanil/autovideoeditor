@@ -80,7 +80,10 @@ sfx_files = load_sfx()
 
 
 # pick first mp4 file
-overlay_files = [f for f in os.listdir(OVERLAY_FOLDER) if f.endswith(".mp4")]
+if os.path.exists(OVERLAY_FOLDER):
+    overlay_files = [f for f in os.listdir(OVERLAY_FOLDER) if f.endswith(".mp4")]
+else:
+    overlay_files = []
 
 if not overlay_files:
     print("No overlay file found!")
@@ -717,6 +720,7 @@ def add_voice_to_video(temp_video, final_output, audio_file):
 
 
 def create_video(audio_file, keywords=None, media_files=None,job_id=None):
+    setup_ffmpeg()
 
     update_status(job_id, "Preparing images...")
     print("Starting video creation...")
