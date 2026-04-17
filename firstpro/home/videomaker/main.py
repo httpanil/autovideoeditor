@@ -9,24 +9,18 @@ import uuid
 import subprocess
 from home.models import VideoJob
 import shutil
+import imageio_ffmpeg
 
 
 # ---------------- FFMPEG SETUP ----------------
 
 def setup_ffmpeg():
-    ffmpeg_path = shutil.which("ffmpeg")
-    ffprobe_path = shutil.which("ffprobe")
-
-    if not ffmpeg_path:
-        raise RuntimeError("ffmpeg not found on system")
+    ffmpeg_path = imageio_ffmpeg.get_ffmpeg_exe()
 
     os.environ["IMAGEIO_FFMPEG_EXE"] = ffmpeg_path
     os.environ["FFMPEG_BINARY"] = ffmpeg_path
 
-    if ffprobe_path:
-        os.environ["FFPROBE_BINARY"] = ffprobe_path
-
-    print("Using system FFmpeg:", ffmpeg_path)
+    print("Using imageio ffmpeg:", ffmpeg_path)
 
 
 

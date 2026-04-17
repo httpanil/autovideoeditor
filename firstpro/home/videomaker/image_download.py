@@ -7,6 +7,7 @@ import os
 import signal
 import sys
 from home.models import VideoJob
+from moviepy import AudioFileClip
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -100,32 +101,47 @@ def clear_images():
 import shutil
 
 def get_audio_duration(audio_path):
-
-    ffprobe = shutil.which("ffprobe")
-
-    if not ffprobe:
-        raise RuntimeError("ffprobe not found on system")
-
-    cmd = [
-        ffprobe,
-        "-v", "error",
-        "-show_entries", "format=duration",
-        "-of", "default=noprint_wrappers=1:nokey=1",
-        audio_path
-    ]
-
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-
-    if result.returncode != 0:
-        print("FFPROBE ERROR:", result.stderr)
-        raise RuntimeError("Failed to get audio duration")
-
     try:
-        duration = float(result.stdout.strip())
-    except:
-        raise RuntimeError("Invalid audio duration output")
+        clip = AudioFileClip(audio_path)
 
-    return math.ceil(duration)
+        if clip.duration is None or clip.duration <= 0:
+            raise RuntimeError("Invalid audio")
+
+        duration = clip.duration
+        clip.close()
+
+        return math.ceil(duration)
+
+    except Exception as e:
+        raise RuntimeError(f"Failed to read audio duration: {e}")
+
+# def get_audio_duration(audio_path):
+
+#     ffprobe = shutil.which("ffprobe")
+
+#     if not ffprobe:
+#         raise RuntimeError("ffprobe not found on system")
+
+#     cmd = [
+#         ffprobe,
+#         "-v", "error",
+#         "-show_entries", "format=duration",
+#         "-of", "default=noprint_wrappers=1:nokey=1",
+#         audio_path
+#     ]
+
+#     result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+#     if result.returncode != 0:
+#         print("FFPROBE ERROR:", result.stderr)
+#         raise RuntimeError("Failed to get audio duration")
+
+#     try:
+#         duration = float(result.stdout.strip())
+#     except:
+#         raise RuntimeError("Invalid audio duration output")
+
+#     return math.ceil(duration)
 
 
 # -----------------------------
